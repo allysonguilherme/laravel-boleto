@@ -37,7 +37,7 @@ class BoletoTest extends TestCase
         ]);
     }
 
-    public static function tearDownAfterClass(): void
+    /*public static function tearDownAfterClass(): void
     {
         $aFiles = [
             __DIR__,
@@ -49,7 +49,7 @@ class BoletoTest extends TestCase
                 @unlink($file);
             }
         }
-    }
+    }*/
 
     public function testAddBoletos()
     {
@@ -826,6 +826,100 @@ class BoletoTest extends TestCase
             'aceite' => 'S',
             'especieDoc' => 'DM',
         ]);
+        $this->assertThat($boleto->toArray(), (new IsType(IsType::TYPE_ARRAY)));
+        $this->assertNotNull($boleto->renderHTML());
+        $this->assertNotNull($boleto->renderPDF());
+    }
+
+    public function testBoletoBancoSisprime()
+    {
+        $boleto = new Boleto\Sisprime([
+            'logo' => realpath(__DIR__ . '/../../logos/') . DIRECTORY_SEPARATOR . '084.png',
+            'dataVencimento' => $this->vencimento(),
+            'valor' => $this->valor(),
+            'multa' => $this->multa(),
+            'juros' => $this->juros(),
+            'numero' => 1,
+            'diasBaixaAutomatica' => 2,
+            'numeroDocumento' => 1,
+            'pagador' => self::$pagador,
+            'beneficiario' => self::$beneficiario,
+            'carteira' => '09',
+            'agencia' => 1111,
+            'agenciaDv' => 0,
+            'conta' => 9999999,
+            'contaCorrenteDv' => 9,
+            'descricaoDemonstrativo' => ['demonstrativo 1', 'demonstrativo 2', 'demonstrativo 3'],
+            'instrucoes' => ['instrucao 1', 'instrucao 2', 'instrucao 3'],
+            'aceite' => $this->aceite(),
+            'especieDoc' => '99',
+        ]);
+
+        $file = implode(DIRECTORY_SEPARATOR, [
+            __DIR__,
+            'files',
+            'sisprime.pdf',
+        ]);
+
+        $pdf = new Pdf();
+        $pdf->addBoleto($boleto);
+        $pdf->gerarBoleto($pdf::OUTPUT_SAVE, $file);
+
+        $this->assertThat($boleto->toArray(), (new IsType(IsType::TYPE_ARRAY)));
+        $this->assertNotNull($boleto->renderHTML());
+        $this->assertNotNull($boleto->renderPDF());
+    }
+
+    public function testBoletoBancoSisprimeEvs()
+    {
+        $boleto = new Boleto\Sisprime([
+            'logo' => realpath(__DIR__ . '/../../logos/') . DIRECTORY_SEPARATOR . '084.png',
+            'dataVencimento' => new \Carbon\Carbon(),
+            'valor' => 703.34,
+            'multa' => 0,
+            'juros' => 0,
+            'numero' => 881921,
+            'numeroDocumento' => 881921,
+            'beneficiario' => new Pessoa([
+                'nome' => 'EVANGELICO SAUDE LTDA',
+                'endereco' => 'Rua Saldanha Marinho, 2250',
+                'bairro' => 'Bigorrilho',
+                'cep' => '80-730-180',
+                'uf' => 'PR',
+                'cidade' => 'Curitiba',
+                'documento' => '02.989.632/0001-55'
+            ]),
+            'pagador' => new Pessoa([
+                'nome' => 'PRISCILA SALES BICUDO KREMPEL FERNANDES',
+                'endereco' => 'RUA ANTONIO PRADO, 78',
+                'bairro' => 'CENTRO',
+                'cep' => '83370000',
+                'uf' => 'PR',
+                'cidade' => 'ANTONINA',
+                'documento' => '308.124.358-00',
+            ]),
+            'carteira' => '09',
+            'agencia' => '0015',
+            'agenciaDv' => 0,
+            'conta' => '085626',
+            'contaDv' => 6,
+            'descricaoDemonstrativo' => ['demonstrativo 1', 'demonstrativo 2', 'demonstrativo 3'],
+            'instrucoes' => ['instrucao 1', 'instrucao 2', 'instrucao 3'],
+            'aceite' => 'A',
+            'especieDoc' => '99',
+        ]);
+
+
+        $file = implode(DIRECTORY_SEPARATOR, [
+            __DIR__,
+            'files',
+            'sisprime.pdf',
+        ]);
+
+        $pdf = new Pdf();
+        $pdf->addBoleto($boleto);
+        $pdf->gerarBoleto($pdf::OUTPUT_SAVE, $file);
+
         $this->assertThat($boleto->toArray(), (new IsType(IsType::TYPE_ARRAY)));
         $this->assertNotNull($boleto->renderHTML());
         $this->assertNotNull($boleto->renderPDF());

@@ -150,6 +150,7 @@ final class Util
         '409' => 'UNIBANCO - União de Bancos Brasileiros S.A.',
         '230' => 'Unicard Banco Múltiplo S.A.',
         '712' => 'Banco Ourinvest',
+        '084' => 'Sisprime do Brasil – Cooperativa de Crédito Ltda',
         '085' => 'AILOS - Sistema de Cooperativa de Crédito',
         'XXX' => 'Desconhecido',
     ];

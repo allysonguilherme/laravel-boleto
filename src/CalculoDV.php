@@ -530,4 +530,14 @@ class CalculoDV
 
         return $dv;
     }
+
+    /*
+   |--------------------------------------------------------------------------
+   | 084 - Sisprime
+   |--------------------------------------------------------------------------
+   */
+    public static function sisprimeNossoNumero($carteira, $nossoNumero)
+    {
+        return Util::modulo11($carteira . Util::numberFormatGeral($nossoNumero, 11), 2, 7, 0, 'P');
+    }
 }
